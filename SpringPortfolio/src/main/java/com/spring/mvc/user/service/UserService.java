@@ -24,14 +24,27 @@ public class UserService implements IUserService {
 		
 		//회원 비밀번호를 암호화 인코딩 객체 생성
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		//암호화 되기 전 패스워드 UserVO의 user.getPassword()
-		System.out.println("암호화 전 패스워드" + user.getPassword());
+		/*
+		 *  암호화 되기 전 패스워드 UserVO의 user.getPassword()
+		 
+		 	const pw = $("#password").val(); //146번 라인
+			console.log("pw: " + pw);
+		 
+		 	//Json형태로 객체만들기
+			const user = { //자바스크립트의 객체 은 자바스크립트의 표기법을 따른다.
+				account: id, //KEY : VALUE 키(왼쪽) 값은 VO의 멤버변수와 같도록한다.
+				password: pw,
+				name: name,
+				phoneNum : phoneNum
+			};
+		 */
+		System.out.println("암호화 전 패스워드" + user.getPassword());  //이 getPassword()는 이미 JSON객체로 만들어졌을때  회원가입창에서 input id="password"에서 등록된 값이다.
 		
 		//비밀번호를 암호화하여 다시 user객체에 저장.
 		//encode메서드는 리턴값이 String. 암호화되기전 패스워드를,
 		//encoder.으로 접근해서 String securePw에 저장.
-		String securePw = encoder.encode(user.getPassword());
-		user.setPassword(securePw);
+		String securePw = encoder.encode(user.getPassword()); //입력된 패스워드를 encode() 메서드에 매개로 받도록 설정.
+		user.setPassword(securePw); // 그리고 그 암호화된 코드를 다시 setter로 작업해서 저장.
 		System.out.println("암호화 후: " + securePw);
 		
 		mapper.register(user); //이 명령을 실행하면 db에 가게된다

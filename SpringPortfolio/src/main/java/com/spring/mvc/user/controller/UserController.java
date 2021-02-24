@@ -36,7 +36,7 @@ public class UserController {
 	//Rest-api에서 Insert 기능은 -> POST 이다.
 	//수정: put
 
-	@PostMapping("/") // /은 그냥 /user와 같음.
+	@PostMapping("/") // /은 그냥 /user와 같음. --> login_modal.jsp에서 입력된 값을 가지고 이 메서드와 통신한다. DB에 안전하게 도착하게되면, console.log("통신 성공!: " + result);이 뜰것이다.
 	public String register(@RequestBody UserVO user) { //클라이언트가 회원가입 정보를 보내줄것이다. //@RequestBody: Rest-api에서 Http 요청에 대해서, 객체를 읽을 수 있도록 해준다. 만일 이것을 붙이지 않았을 경우, UserVO에서 null값이 출력될 것이다. 이것은 postman에서 확인해 볼 수 있다.
 
 		System.out.println("/user/ POST 요청 발생!");
@@ -91,13 +91,15 @@ public class UserController {
 		//로그인 요청 처리
 		@PostMapping("/loginCheck") //아이디 비번이 넘어가니까 POST요청
 		public String loginCheck(@RequestBody UserVO inputData,
-									/*HttpServletRequest request*/ 
-					HttpSession session, 
+									/*HttpServletRequest request*/  //세션객체얻는방법 1-디스패쳐서블릿이 이 메서드를 호출할때 전달된 request 객체를 넣어준다.
+					HttpSession session, //마찬가지로 디스패쳐서블릿이 이 메서드를 호출할때 전달된 session 객체를 넣어준다.
 					HttpServletResponse response) {
 			
-			//서버에서 세션객체를 얻는 방법
-			//1. HttpServletRequest객체 사용
-			//HttpSession session = request.getSession();
+			//서버에서 세션객체를 얻는 방법 2020-10-13
+			/*1. HttpServletRequest객체 사용
+			HttpSession session = request.getSession(); -- 만일 HttpServletRequest를 쓸 수 밖에 없다면 이렇게 써야만 한다. 그러나, 강사 曰 커스텀 할 수 있다면 첫번째 방법보다는 두번째 방법을 선호한다.
+			*/
+			
 			//2. HttpSession 사용 - 두번째 방법.
 			
 			String result = null;
@@ -110,7 +112,7 @@ public class UserController {
 			   3. 로그인 성공시 문자열 "loginSuccess" 전송
 			 */
 			System.out.println("/user/loginCheck 요청! : POST");
-			System.out.println("Parameter: " + inputData);
+			System.out.println("Parameter: " + inputData); //@RequestBody UserVO inputData
 			
 			//DB에서 데이터를 가져옴
 			//회원가입된 아이디라면 정상적으로 dbData에 값이 있을 것이고,
@@ -118,25 +120,25 @@ public class UserController {
 			
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			//selectOne 메서드(DB데이터)로 가져온 계정명의 정보를 UserVO dbData에 저장.
-			UserVO dbData = service.selectOne(inputData.getAccount());
+			UserVO dbData = service.selectOne(inputData.getAccount()); //DB에 갔다온 데이터 dbData
 			
 			if(dbData != null) {
 				//입력된 Password와 DB에 존재하는 Password가 같다면
 				//UserVO의 패스워드 입력과 DB의 데이터가 일치한다면,
 				if(encoder.matches(inputData.getPassword(), dbData.getPassword())){
-					session.setAttribute("login", dbData); //UserVO dbData를 "login"이라는 이름의 세션 객체를 설정. 세션이란? 서버측에 저장되는 객체
+					session.setAttribute("login", dbData); //UserVO dbData를 "login"이라는 세션객체에 바인딩(저장)
 					result = "loginSuccess"; //loginSuccess값 리턴
 					
 					long limitTime = 60 * 60 * 24 * 90; //3개월
 					
 					//자동로그인 체크시 처리
 					//isAutoLogin()은 UserVO autoLogin의 getter값.
-					if(inputData.isAutoLogin()) { //autologine이 true라면, 
+					if(inputData.isAutoLogin()) { //autologine이 true라면, --> 블로그 설명참조[login_modal.jsp]에서 auto_login의 체크여부를 확인 할 수 있었다.
 						 System.out.println("자동 로그인 쿠키 생성중...");
 						 //session.getId(): 브라우저에 있는 현재 session아이디를 불러올 수 있다. 이것을 "loginCookie"에 저장.
 						 Cookie loginCookie = new Cookie("loginCookie" , session.getId()); //쿠키생성
 						 loginCookie.setPath("/"); //loginCookie의 저장경로를 시작 URL로 설정
-						 loginCookie.setMaxAge((int)limitTime); //setMaxAge는 int로 매개를 받음.
+						 loginCookie.setMaxAge((int)limitTime); //setMaxAge는 int로 매개를 받음. //setMaxAge:쿠키가 언제 만료될지 설정.(쿠키의 유효시간 설정)
 						
 						 response.addCookie(loginCookie); //쿠키를 클라이언트에 실어보낼때, response객체 사용.
 						 //이것을 사용하기위해서 매개변수로 HttpServletResponse response 사용.
@@ -153,7 +155,7 @@ public class UserController {
 						  * 
 						  */
 						 
-						 long expiredDate = System.currentTimeMillis() + (limitTime * 1000);
+						 long expiredDate = System.currentTimeMillis() + (limitTime * 1000); //currentTimeMillis(): 현재시간을 밀리세컨드초 단위로 바꾼다.
 						 Date limitDate = new Date(expiredDate); //그 밀리초단위를 객체로 만들어서 날짜로 바꿔서 저장?
 						 //session.getId(): 세션 고유 아이디를 가져옴.
 						 service.keepLogin(session.getId(), limitDate, inputData.getAccount());

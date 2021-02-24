@@ -563,8 +563,8 @@ $(function() {
 			
 			//Json형태로 객체만들기
 			const user = { //자바스크립트의 객체 은 자바스크립트의 표기법을 따른다.
-				account: id, //KEY : VALUE 키(왼쪽) 값은 VO의 멤버와 같도록한다.
-				password: pw,
+				account: id, //KEY : VALUE 키(왼쪽) 값은 VO의 멤버변수와 같도록한다.
+				password: pw, //input id="password" 의 값을 VO의 멤버변수 password와 같게 했다.
 				name: name,
 				phoneNum : phoneNum
 			};
@@ -650,8 +650,7 @@ $(function() {
 			const pw = $('#signInPw').val();
 			//is()함수는 상태여부를 판단하여 논리값을 리턴합니다.
 			//input 태그인데, name 속성값인 autoLogin인 애가 체크 되었나요? 라고 물어보는것이다.
-			const autoLogin = $("input[name=autoLogin]").is(":checked"); //체크를 했다면 true, 안했으면 false를 담을것이다.
-			
+			const autoLogin = $("input[name=autoLogin]").is(":checked"); //체크를 했다면 true, 안했으면 false를 담을것이다. //64번
 			
 			console.log("id: " + id);
 			console.log("pw: " + pw);
@@ -696,8 +695,8 @@ $(function() {
 						
 				    } else if(data === "pwFail") { //pwFail일 경우,
 						$('#signInPw').css("background-color", "#A5D8FA"); 
-						$('#signInPw').val(""); //그리고, 패스워드 입력값을 지워버린다.
-						$('#signInPw').focus(); //그리고 signInPw에 마우스 커서창을 이동시킨다.
+						$('#signInPw').val(""); //그리고, 패스워드 입력값을 지워버린다.(공백값을 넣어서 val에 들어가있는 값을 ""로 바꾼다.)
+						$('#signInPw').focus(); //focus(): signInPw에 마우스 커서창을 이동시킨다.
 						$('#pwCheck').html('<b style="font-size:14px;color:red;">[비밀번호를 다시 확인 해주세요.]</b>');
 						//pwCheck란에 [비밀번호를 다시 확인해주세요]를 삽입시킨다.
 						chk2 = false;

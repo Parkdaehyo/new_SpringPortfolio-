@@ -41,7 +41,7 @@
 		<interceptor>
 			<mapping path="/test1"/>
 			<mapping path="/test2"/>
-			<beans:ref bean="testInterceptor" />
+			<beans:ref bean="testInterceptor" />  <!--  interceptors 태그 안에서 빈으로 등록되있는, 참조할 인터셉터 설정. -->
 		</interceptor>
 		
 	</interceptors>

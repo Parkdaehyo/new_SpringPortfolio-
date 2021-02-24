@@ -15,6 +15,8 @@ public class BoardInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+
+		System.out.println("게시판 인터셉터 발동!");
 		/*
 		BoardController에 요청 보낸 놈이 회원인지 아닌지 확인 그렇다면 Session을 받아와야한다.
 		그런데 매개변수에 Session이 없다 어떻게 하지?
@@ -24,7 +26,6 @@ public class BoardInterceptor extends HandlerInterceptorAdapter {
 		HttpSession이 반환값이다.
 		 */
 		
-		System.out.println("게시판 인터셉터 발동!");
 		HttpSession session = request.getSession(); //request으로 세션을 가져와서 쓸 수 있도록 설정.
 		
 		//가져온 "login"이라는 session의 값이 null이라면
@@ -45,7 +46,7 @@ public class BoardInterceptor extends HandlerInterceptorAdapter {
 			out.flush();//브라우저 출력버퍼 비우기
 			out.close();//out객체 반납하기.
 			
-			return false; //false값 반환
+			return false; //false값 이면 인터셉터는 진입을 허용하지 않는다.
 		}
 		
 		

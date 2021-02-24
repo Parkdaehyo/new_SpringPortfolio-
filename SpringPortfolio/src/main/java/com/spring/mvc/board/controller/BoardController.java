@@ -61,15 +61,17 @@ public class BoardController {
 	public String write(HttpSession session, RedirectAttributes ra) {
 		System.out.println("URL: /board/write => GET");
 		
-		//�꽭�뀡�쓣 遺덈윭���꽌, 洹� 濡쒓렇�씤 媛믪씠 null �씠�씪硫�,
-		//not login 硫붿꽭吏�瑜� 蹂대깂. home.jsp
+	/*
+	 * 회원제 / 비회원제 게시판 구분을 위해서
+	 * 세션 객체가 있을때만 게시글 작성페이지로 이동하게 할 것이다.
+	 * 
+	 */
 		
-		//�씤�꽣�뀎�꽣濡� 泥섎━�븷寃껋씠湲� �븣臾몄뿉 二쇱꽍泥섎━ �븯寃좊떎.
-		
+		//인터셉터를 활용하기 위해서 아래와 같은 방식은 잘 사용하지 않는다.
 		//if(session.getAttribute("login") == null) {
 			//ra.addFlashAttribute("msg" , "not-login");
 			
-			//return "redirect:/"; //洹몃━怨� home.jsp濡� 蹂대궦�떎.		
+			//return "redirect:/"; // home.jsp로 보낸다.	
 		//}
 		
 		return "board/write";

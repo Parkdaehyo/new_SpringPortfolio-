@@ -39,10 +39,25 @@ public class AutoLoginInterceptor extends HandlerInterceptorAdapter {
 			//getUserWithSessionId(sessionId);: 세션 아이디 추출하는것. 쿠키에서 그 세션 아이디를 가져오겠다.
 			//getValue() 메서드: 쿠키값을 가져온다.
 			
+			/*
+			 *  Cookie loginCookie = new Cookie("loginCookie" , session.getId()); 
+			 * "loginCookie"에는 브라우저의 sessionId가 저장되어있다.
+			 * loginCookie.getValue()은 그 값을 가져오는 것이다.
+			 * 
+			 * <select id="getUserWithSessionId" resultMap="UserMap">
+	
+				SELECT * FROM new_user
+				WHERE session_id =#{sessionId}
+	
+			   </select>
+			 * 
+			 */
+			
+			
 			UserVO user = service.getUserWithSessionId(loginCookie.getValue()); // 쿠키에서 그 세션 아이디를 가져오겠다.
-			if(user != null) { //null이 아니라면 == 정상적으로 회원의 정보가 들어 왔다면,
+			if(user != null) { //null이 아니라면 == 정상적으로 회원의 정보가 들어 왔다면, getUserWithSessionId에서 해당 회원의 조회문을 가져왔다. 
 				
-				//UserController의 102번라인 login 세션객체를 다시설정?
+				//기존에는 loginCookie로 세션 id를 저장을 했다가 다시 로그인을 했으니, 다시 재설정해주는 작업인것 같다. 
 				session.setAttribute("login", user); //이것을 쓰기 위해서 라인 25번 처럼 작성.
 				
 			}
